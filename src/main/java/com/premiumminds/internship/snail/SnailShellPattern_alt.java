@@ -19,43 +19,48 @@ class SnailShellPattern_alt implements ISnailShellPattern {
   };
 
   /**
-   * Function that calculates snailshell using a series of directions each time
-   * an element is added, it is then set to -1 in the original matrix.
+   * Function that calculates snailshell for an NxN matrix 
+   * using a series of directions. Each time an element is added
+   * it is then set to -1 in the original matrix so that we know it's
+   * already been visited and the algorithm moves on the next slot.
    * 
    * @param matrix matrix of numbers to go through
    * @return order array of values that represent a snail shell pattern
    */
   private int[] computeSnail(int[][] matrix){
-    int size = matrix.length;
-    int[] snail = new int[size*size];
-    int[] pos = {0,0};
-    int[] dir = {0,1};
+    int[] snail = {};
+    int size = matrix[0].length;
+    if(size != 0){
+      snail = new int[size*size];
+      int[] pos = {0,0};
+      int[] dir = {0,1};
 
-    for(int i = 0; i < size*size; i++){
-      if(matrix[pos[0]][pos[1]] == -1){
-        //go back and pivot
-        pos[0] -= dir[0]; pos[1] -= dir[1];
-        dir = nextDir(dir);
-        pos[0] += dir[0]; pos[1] += dir[1];
-
-        //add correct element to path
-        snail[i] = matrix[pos[0]][pos[1]];
-        matrix[pos[0]][pos[1]] = -1;
-      }
-      else{
-        //add element to snail path
-        snail[i] = matrix[pos[0]][pos[1]];
-        matrix[pos[0]][pos[1]] = -1;
-
-        //check if in corner (only ever happens 3x)
-        if((pos[0] == size-1 && pos[1] == 0) ||
-          (pos[0] == size-1 && pos[1] == size -1) || 
-          (pos[0] == 0 && pos[1] == size-1)){
+      for(int i = 0; i < size*size; i++){
+        if(matrix[pos[0]][pos[1]] == -1){
+          //go back and pivot
+          pos[0] -= dir[0]; pos[1] -= dir[1];
           dir = nextDir(dir);
+          pos[0] += dir[0]; pos[1] += dir[1];
+
+          //add correct element to path
+          snail[i] = matrix[pos[0]][pos[1]];
+          matrix[pos[0]][pos[1]] = -1;
         }
+        else{
+          //add element to snail path
+          snail[i] = matrix[pos[0]][pos[1]];
+          matrix[pos[0]][pos[1]] = -1;
+
+          //check if in corner (only ever happens 3x)
+          if((pos[0] == size-1 && pos[1] == 0) ||
+            (pos[0] == size-1 && pos[1] == size -1) || 
+            (pos[0] == 0 && pos[1] == size-1)){
+            dir = nextDir(dir);
+          }
+        }
+        //advance to next slot
+        pos[0] += dir[0]; pos[1] += dir[1];
       }
-      //advance to next slot
-      pos[0] += dir[0]; pos[1] += dir[1];
     }
     return snail;
   }
@@ -65,7 +70,7 @@ class SnailShellPattern_alt implements ISnailShellPattern {
    * considering the input direction.
    * 
    * @param dir array that indicates direction in (row,col) format
-   * @return new direction to follow
+   * @return array containing new direction to follow in (row,col) format
    */
   private int[] nextDir(int[] dir){
     int[] newDir = {0,0};
